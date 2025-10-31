@@ -1,0 +1,18 @@
+[package]
+name = "crab_dungeon"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+bevy = "0.16.0"
+bevy_ecs_tiled = "0.9.6"
+bevy_ecs_tilemap = "0.16.0"
+bevy_rapier2d = "0.31.0"
+bytemuck = "1.24.0"
+crevice = "0.18.0"
+log = "0.4.28"
+serde = "1.0.228"
+serde_spanned = "1.0.3"
+thiserror = "2.0.17"
+tiled = "0.15.0"
+uuid = { version = "1.0", features = ["v4"] }

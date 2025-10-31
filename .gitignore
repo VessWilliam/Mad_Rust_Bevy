@@ -1,0 +1,12 @@
+# ---- Rust / Cargo ----
+/target/
+**/*.rs.bk
+Cargo.lock
+# (Keep Cargo.lock for apps, ignore for libraries — uncomment below if you're writing a lib)
+# !Cargo.lock
+
+# ---- Bevy build outputs ----
+# Bevy can generate shader caches, logs, etc.
+bevy_cache/
+shader_cache/
+log.txt
