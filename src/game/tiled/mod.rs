@@ -9,7 +9,9 @@ pub mod components;
 
 use bevy_ecs_tiled::tiled::TiledPlugin;
 use systems::{ load_tile_map, setup_background_color };
-use resources::{ GameBackground };
+use resources::{ GameBackground, SpawnBounds };
+
+
 
 pub struct TiledMapPlugin;
 
@@ -17,6 +19,7 @@ impl Plugin for TiledMapPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(TiledPlugin::default())
             .init_resource::<GameBackground>()
+            .init_resource::<SpawnBounds>()
             .add_systems(Startup, (load_tile_map, setup_background_color));
     }
 }

@@ -1,40 +1,47 @@
 use bevy::prelude::*;
 use bevy_ecs_tiled::prelude::*;
-use crate::game::tiled::traits::CollisionBuilderTrait;
-
 use super::components::{ MapCollisionState, MapMetadata };
+use super::resources::SpawnBounds;
+use super::traits::CollisionBuilderTrait;
 
 pub fn on_map_created(
     trigger: Trigger<TiledEvent<MapCreated>>,
-    asset: Res<Assets<TiledMapAsset>>,
+    assets: Res<Assets<TiledMapAsset>>,
     mut commands: Commands
 ) {
     let map_entity = trigger.origin.entity();
 
-    match trigger.event().get_map(&asset) {
-        Some(map_asset) => {
-            info!(
-                "✅ Map loaded: {}x{} with {} layers",
-                map_asset.width,
-                map_asset.height,
-                map_asset.layers().len()
-            );
+    // ✅ Get map directly from the event
+    let Some(map_asset) = trigger.event().get_map(&assets) else {
+        warn!("Map asset not found for entity {:?}", map_entity);
+        return;
+    };
 
-            // Build collision data
-            let mut collision_state = MapCollisionState::default();
-            collision_state.build_collision(map_asset);
+    let map = map_asset;
 
-            // Create metadata
-            let metadata = MapMetadata::from_map(map_asset);
+    info!("✅ Map loaded: {}x{} with {} layers", map.width, map.height, map.layers().len());
 
-            // Spawn colliders immediately
-            collision_state.spawn_collider(&mut commands, &metadata);
+    // Build collision data
+    let mut collision_state = MapCollisionState::default();
+    collision_state.build_collision(map);
 
-            // Attach components to the map entity
-            commands.entity(map_entity).insert((collision_state, metadata));
-        }
-        None => {
-            warn!("Map asset not found for entity {:?}", map_entity);
-        }
-    }
+    // Create metadata
+    let metadata = MapMetadata::from_map(map);
+
+    // Set spawn bounds
+    let world_width = (map.width as f32) * (map.tile_width as f32);
+    let world_height = (map.height as f32) * (map.tile_height as f32);
+
+    commands.insert_resource(SpawnBounds {
+        width: world_width,
+        height: world_height,
+    });
+
+    info!("✅ Set spawn bounds: {}x{}", world_width, world_height);
+
+    // Spawn colliders
+    collision_state.spawn_collider(&mut commands, &metadata);
+
+    // Attach components to the map entity
+    commands.entity(map_entity).insert((collision_state, metadata));
 }
