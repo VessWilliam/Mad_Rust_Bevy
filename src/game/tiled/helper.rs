@@ -2,12 +2,14 @@ use bevy::prelude::*;
 use bevy_ecs_tiled::prelude::*;
 use super::components::{ MapCollisionState, MapMetadata };
 use super::resources::SpawnBounds;
+use super::events::MapFullyLoaded;
 use super::traits::CollisionBuilderTrait;
 
 pub fn on_map_created(
     trigger: Trigger<TiledEvent<MapCreated>>,
     assets: Res<Assets<TiledMapAsset>>,
-    mut commands: Commands
+    mut commands: Commands,
+    mut map_loaded_event: EventWriter<MapFullyLoaded>
 ) {
     let map_entity = trigger.origin.entity();
 
@@ -44,4 +46,6 @@ pub fn on_map_created(
 
     // Attach components to the map entity
     commands.entity(map_entity).insert((collision_state, metadata));
+
+    map_loaded_event.write(MapFullyLoaded { map_entity });
 }

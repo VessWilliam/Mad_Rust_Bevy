@@ -1,14 +1,17 @@
-use bevy::ecs::query;
 use bevy::prelude::*;
-use bevy_ecs_tiled::prelude::MapCreated;
-use bevy_ecs_tiled::prelude::TiledEvent;
+use bevy_rapier2d::prelude::Ccd;
+use bevy_rapier2d::prelude::CoefficientCombineRule;
 use bevy_rapier2d::prelude::Collider;
 
+use bevy_rapier2d::prelude::CollisionEvent;
 use bevy_rapier2d::prelude::Damping;
 use bevy_rapier2d::prelude::Restitution;
+use bevy_rapier2d::prelude::Velocity;
+
 use rand::Rng;
 use bevy_rapier2d::prelude::{ Friction, GravityScale, LockedAxes, RigidBody };
 use crate::game::tiled::resources::SpawnBounds;
+use crate::game::tiled::events::MapFullyLoaded;
 
 use super::components::*;
 use super::resources::*;
@@ -28,48 +31,76 @@ pub fn set_enemy_texture(asset_server: Res<AssetServer>, mut gametexture: ResMut
 }
 
 pub fn spawn_enemy(
-    trigger: Trigger<TiledEvent<MapCreated>>,
+    mut map_loaded_event: EventReader<MapFullyLoaded>,
     mut commands: Commands,
     gametexture: Res<GameTexture>,
     spawn_bounds: Res<SpawnBounds>
 ) {
-    let mut rand = rand::rng();
+    for event in map_loaded_event.read() {
+        info!("Spawning enemies for map : {:?}", event.map_entity);
 
-    let w_span = spawn_bounds.width / 2.0 - 100.0;
-    let h_span = spawn_bounds.height / 2.0 - 100.0;
-    let x = rand.random_range(-w_span..w_span);
-    let y = rand.random_range(-h_span..h_span);
+        let mut rng = rand::rng();
 
-    let max_velocity = 50.0;
-    let velocity = generate_random_velocity(max_velocity);
+        for i in 0..5 {
+            let w_span = spawn_bounds.width / 2.0 - 100.0;
+            let h_span = spawn_bounds.height / 2.0 - 100.0;
+            let x = rng.random_range(-w_span..w_span);
+            let y = rng.random_range(-h_span..h_span);
 
-    commands.spawn((
-        Sprite::from_image(gametexture.enemy.clone()),
-        Transform {
-            translation: Vec3::new(x, y, 0.0),
-            scale: Vec3::splat(ENEMY_SIZE_SCALE),
-            ..Default::default()
-        },
-        RigidBody::Dynamic,
-        Collider::ball(16.0),
-        Velocity { value: velocity },
-        Restitution::coefficient(1.0),
-        Friction::coefficient(0.0),
-        GravityScale(0.0),
-        Damping { linear_damping: 0.0, angular_damping: 0.0 },
-        LockedAxes::ROTATION_LOCKED,
-        Enemy,
-    ));
+            let init_velocity = Vec2::new(150.0, 150.0);
+
+            commands.spawn((
+                Sprite::from_image(gametexture.enemy.clone()),
+                Transform {
+                    translation: Vec3::new(x, y, 10.0),
+                    scale: Vec3::splat(ENEMY_SIZE_SCALE),
+                    ..Default::default()
+                },
+                RigidBody::Dynamic,
+                Collider::ball(16.0),
+                Velocity::linear(init_velocity),
+                Restitution {
+                    coefficient: 1.0,
+                    combine_rule: CoefficientCombineRule::Max,
+                },
+                Friction {
+                    coefficient: 0.0,
+                    combine_rule: CoefficientCombineRule::Min,
+                },
+                GravityScale(0.0),
+                Damping { linear_damping: 0.0, angular_damping: 0.0 },
+                LockedAxes::ROTATION_LOCKED,
+                Ccd::enabled(),
+                Enemy,
+            ));
+            info!("Spawn Enemy {} at ({:.0}, {:.0})", i, x, y);
+        }
+    }
 }
 
+pub fn speed_limit(max: Res<MaxSpeed>, mut query: Query<&mut Velocity, With<Enemy>>) {
+    for mut velocity in query.iter_mut() {
+        let speed = velocity.linvel.length();
 
-pub  fn speed_limit(max: Res<MaxSpeed>, mut query: Query<&mut Velocity>){
-    for mut velocity in query.iter_mut(){
-          let speed = (velocity.value.x.powi(2) + velocity.value.y.powi(2).sqrt());
-          if speed > max.max_speed{
-            let scale =  max.max_speed / speed;
-            velocity.value.x *= scale;
-            velocity.value.y *= scale
-          }
+        if speed > max.max_speed {
+            let scale = max.max_speed / speed;
+            velocity.linvel *= scale;
+        } else if speed < max.max_speed * 0.95 {
+            let scale = max.max_speed / speed;
+            velocity.linvel += scale;
+        }
+    }
+}
+
+pub fn debug_enemy_collision(
+    mut collision_events: EventReader<CollisionEvent>,
+    enemy_query: Query<&Transform, With<Enemy>>
+) {
+    for collision_event in collision_events.read() {
+        if let CollisionEvent::Started(e1, e2, _flag) = collision_event {
+            if enemy_query.contains(*e1) || enemy_query.contains(*e2) {
+                info!("Enemy Bounce");
+            }
+        }
     }
 }

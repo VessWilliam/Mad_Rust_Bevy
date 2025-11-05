@@ -6,10 +6,12 @@ pub mod systems;
 pub mod helper;
 pub mod builder;
 pub mod components;
+pub mod events;
 
 use bevy_ecs_tiled::tiled::TiledPlugin;
 use systems::{ load_tile_map, setup_background_color };
 use resources::{ GameBackground, SpawnBounds };
+use crate::game::tiled::events::MapFullyLoaded;
 
 
 
@@ -20,6 +22,7 @@ impl Plugin for TiledMapPlugin {
         app.add_plugins(TiledPlugin::default())
             .init_resource::<GameBackground>()
             .init_resource::<SpawnBounds>()
+            .add_event::<MapFullyLoaded>()
             .add_systems(Startup, (load_tile_map, setup_background_color));
     }
 }

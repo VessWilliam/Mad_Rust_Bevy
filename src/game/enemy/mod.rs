@@ -1,5 +1,7 @@
 use bevy::prelude::*;
 
+use crate::game::enemy::systems::{ debug_enemy_collision, speed_limit };
+
 use self::{
     resources::{ BounceState, GameTexture, MaxSpeed, SpeedUp, SpeedMultiplier },
     systems::{ set_enemy_texture, spawn_enemy },
@@ -19,6 +21,6 @@ impl Plugin for EnemyPlugin {
             .insert_resource(SpeedUp { speed_up: 1.0 })
             .insert_resource(SpeedMultiplier { speed_multiplier: 2.0 })
             .add_systems(Startup, set_enemy_texture)
-            .add_observer(spawn_enemy);
+            .add_systems(Update, (spawn_enemy, speed_limit, debug_enemy_collision));
     }
 }
