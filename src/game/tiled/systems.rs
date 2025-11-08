@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 use bevy_ecs_tiled::prelude::*;
-use crate::game::tiled::resources::{GameBackground, SpawnBounds};
+use super::resources::GameBackground;
 use super::helper::on_map_created;
 
 pub fn load_tile_map(mut commands: Commands, asset_server: Res<AssetServer>) {
@@ -19,4 +19,3 @@ pub fn load_tile_map(mut commands: Commands, asset_server: Res<AssetServer>) {
 pub fn setup_background_color(bg_colour: Res<GameBackground>, mut commands: Commands) {
     commands.insert_resource(bg_colour.clear_colour.clone());
 }
-

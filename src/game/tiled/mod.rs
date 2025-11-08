@@ -1,3 +1,4 @@
+use bevy_ecs_tiled::tiled::TiledPlugin;
 use bevy::prelude::*;
 
 pub mod resources;
@@ -8,12 +9,11 @@ pub mod builder;
 pub mod components;
 pub mod events;
 
-use bevy_ecs_tiled::tiled::TiledPlugin;
-use systems::{ load_tile_map, setup_background_color };
-use resources::{ GameBackground, SpawnBounds };
-use crate::game::tiled::events::MapFullyLoaded;
-
-
+use self::{
+    systems::{ load_tile_map, setup_background_color },
+    resources::{ GameBackground, SpawnBounds },
+    events::MapFullyLoaded,
+};
 
 pub struct TiledMapPlugin;
 
