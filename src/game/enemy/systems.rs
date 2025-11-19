@@ -32,16 +32,57 @@ pub fn spawn_enemy(
     }
 }
 
-pub fn speed_limit(max: Res<MaxSpeed>, mut query: Query<&mut Velocity, With<Enemy>>) {
+pub fn speed_limit(max: ResMut<MaxSpeed>, mut query: Query<&mut Velocity, With<Enemy>>) {
     for mut velocity in query.iter_mut() {
         let speed = velocity.linvel.length();
+        if speed == 0.0 {
+            continue;
+        }
 
-        if speed > max.max_speed {
-            let scale = max.max_speed / speed;
-            velocity.linvel *= scale;
-        } else if speed < max.max_speed * 0.95 {
-            let scale = max.max_speed / speed;
-            velocity.linvel *= scale;
+        match speed {
+            s if s > max.max_speed => {
+                velocity.linvel = velocity.linvel.normalize() * max.max_speed;
+            }
+
+            s if s < max.min_speed => {
+                velocity.linvel = velocity.linvel.normalize() * max.min_speed;
+            }
+            _ => {}
+        }
+    }
+}
+
+pub fn rotate_enemy_sprite(mut query: Query<(&Velocity, &mut Transform), With<Enemy>>) {
+    for (velocity, mut transform) in query.iter_mut() {
+        if velocity.linvel.length() < 0.1 {
+            continue;
+        }
+        let angle = velocity.linvel.y.atan2(velocity.linvel.x);
+        transform.rotation = Quat::from_rotation_z(angle);
+    }
+}
+
+pub fn enemy_bounce_system(
+    mut collision_events: EventReader<CollisionEvent>,
+    mut enemies: Query<&mut Velocity, With<Enemy>>
+) {
+    for event in collision_events.read() {
+        if let CollisionEvent::Started(e1, e2, _) = event {
+            if !enemies.contains(*e1) || !enemies.contains(*e2) {
+                continue;
+            }
+
+            for entity in [e1, e2] {
+                if let Ok(mut vel) = enemies.get_mut(*entity) {
+                    vel.linvel = -vel.linvel;
+
+                    let random_angle = (rand::random::<f32>() - 0.5) * 0.4;
+                    let speed = vel.linvel.length();
+                    let current_angle = vel.linvel.y.atan2(vel.linvel.x);
+                    let new_angle = current_angle + random_angle;
+                    vel.linvel = Vec2::new(new_angle.cos(), new_angle.sin()) * speed;
+                }
+            }
         }
     }
 }
@@ -56,27 +97,5 @@ pub fn debug_enemy_collision(
                 info!("Enemy Bounce");
             }
         }
-    }
-}
-pub fn debug_camera(
-    camera_query: Query<&Transform, With<Camera>>,
-    enemy_query: Query<&Transform, With<Enemy>>
-) {
-    for cam_transform in &camera_query {
-        info!(
-            "📷 Camera at: ({:.0}, {:.0}, {:.0})",
-            cam_transform.translation.x,
-            cam_transform.translation.y,
-            cam_transform.translation.z
-        );
-    }
-
-    for enemy_transform in &enemy_query {
-        info!(
-            "👾 Enemy at: ({:.0}, {:.0}, {:.0})",
-            enemy_transform.translation.x,
-            enemy_transform.translation.y,
-            enemy_transform.translation.z
-        );
     }
 }

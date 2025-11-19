@@ -79,7 +79,6 @@ impl EnemySpawner for EdgeEnemySpawner {
                 linear_damping: 0.0,
                 angular_damping: 0.0,
             },
-            LockedAxes::ROTATION_LOCKED,
             Ccd::enabled(),
             Enemy,
         ));

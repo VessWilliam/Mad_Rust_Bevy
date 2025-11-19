@@ -81,9 +81,10 @@ pub fn player_keyboad_event(
         if rap_vel.linvel.y.abs() < 0.5 {
             vel_com.y = config.jump;
         }
-    } else {
-        vel_com.y = 0.0;
+        return;
     }
+
+    vel_com.y = 0.0;
 }
 
 pub fn sync_velocity_to_rapier(

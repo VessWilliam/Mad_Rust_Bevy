@@ -28,8 +28,8 @@ pub struct PlayerConfig {
 impl Default for PlayerConfig {
     fn default() -> Self {
         Self {
-            spawn_x: 70.0, 
-            spawn_y: 200.0,
+            spawn_x: 40.0, 
+            spawn_y: 50.0,
             size: PLAYER_SIZE,
             scale: PLAYER_SIZE_SCALE,
             speed: 150.0,
