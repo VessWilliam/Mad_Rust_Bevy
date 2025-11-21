@@ -1,5 +1,5 @@
-use bevy::prelude::*;
 use crate::game::tiled::resources::SpawnBounds;
+use bevy::prelude::*;
 
 pub trait EnemySpawner {
     fn spawn_enemy(
@@ -7,6 +7,6 @@ pub trait EnemySpawner {
         commands: &mut Commands,
         texture: Handle<Image>,
         spawn_bounds: &SpawnBounds,
-        enemy_id: i32
+        enemy_id: i32,
     );
 }

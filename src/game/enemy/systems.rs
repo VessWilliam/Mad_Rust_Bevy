@@ -1,14 +1,16 @@
+use crate::game::enemy::traits::EnemySpawner;
+use crate::game::tiled::events::MapFullyLoaded;
+use crate::game::tiled::resources::SpawnBounds;
+
 use bevy::prelude::*;
+
 use bevy_rapier2d::prelude::CollisionEvent;
 use bevy_rapier2d::prelude::Velocity;
-use crate::game::enemy::traits::EnemySpawner;
-use crate::game::tiled::resources::SpawnBounds;
-use crate::game::tiled::events::MapFullyLoaded;
 
 use super::components::*;
 use super::resources::*;
 
-use super::const_string::ENEMY_SPRITE;
+use super::constants::{ENEMY_SAFE_MARGIN, ENEMY_SPEED, ENEMY_SPRITE};
 
 pub fn set_enemy_texture(asset_server: Res<AssetServer>, mut gametexture: ResMut<GameTexture>) {
     gametexture.enemy = asset_server.load(ENEMY_SPRITE);
@@ -18,12 +20,15 @@ pub fn spawn_enemy(
     mut map_loaded_event: EventReader<MapFullyLoaded>,
     mut commands: Commands,
     gametexture: Res<GameTexture>,
-    spawn_bounds: Res<SpawnBounds>
+    spawn_bounds: Res<SpawnBounds>,
 ) {
     for map_event in map_loaded_event.read() {
-        info!("✅ Map {:?} fully loaded. Spawning enemies.", map_event.map_entity);
+        info!(
+            "✅ Map {:?} fully loaded. Spawning enemies.",
+            map_event.map_entity
+        );
 
-        let spawner = EdgeEnemySpawner;
+        let spawner = EdgeEnemySpawner::new(ENEMY_SPEED, ENEMY_SAFE_MARGIN);
 
         // Spawn 2 enemies directly
         for id in 0..2 {
@@ -64,7 +69,7 @@ pub fn rotate_enemy_sprite(mut query: Query<(&Velocity, &mut Transform), With<En
 
 pub fn enemy_bounce_system(
     mut collision_events: EventReader<CollisionEvent>,
-    mut enemies: Query<&mut Velocity, With<Enemy>>
+    mut enemies: Query<&mut Velocity, With<Enemy>>,
 ) {
     for event in collision_events.read() {
         if let CollisionEvent::Started(e1, e2, _) = event {
@@ -87,9 +92,19 @@ pub fn enemy_bounce_system(
     }
 }
 
+pub fn keep_enemies_in_bound(
+    mut enemies: Query<&mut Transform, With<Enemy>>,
+    spawn_bound: Res<SpawnBounds>,
+) {
+    for mut transform in enemies.iter_mut() {
+        transform.translation.x = transform.translation.x.clamp(0.0, spawn_bound.width);
+        transform.translation.y = transform.translation.y.clamp(0.0, spawn_bound.height);
+    }
+}
+
 pub fn debug_enemy_collision(
     mut collision_events: EventReader<CollisionEvent>,
-    enemy_query: Query<&Transform, With<Enemy>>
+    enemy_query: Query<&Transform, With<Enemy>>,
 ) {
     for collision_event in collision_events.read() {
         if let CollisionEvent::Started(e1, e2, _flag) = collision_event {

@@ -1,23 +1,19 @@
 use bevy::prelude::*;
 
+mod builder;
 mod components;
-mod const_string;
+mod constants;
 mod resources;
 mod systems;
-mod builder;
 mod traits;
 
 use crate::game::tiled::events::MapFullyLoaded;
 
 use self::{
-    resources::{ GameTexture, MaxSpeed },
+    resources::{GameTexture, MaxSpeed},
     systems::{
-        set_enemy_texture,
-        spawn_enemy,
-        debug_enemy_collision,
-        speed_limit,
-        enemy_bounce_system,
-        rotate_enemy_sprite,
+        enemy_bounce_system, keep_enemies_in_bound, rotate_enemy_sprite, set_enemy_texture,
+        spawn_enemy, speed_limit,
     },
 };
 
@@ -29,12 +25,15 @@ impl Plugin for EnemyPlugin {
             .init_resource::<MaxSpeed>()
             .insert_resource(GameTexture { enemy: default() })
             .add_systems(Startup, set_enemy_texture)
-            .add_systems(Update, (
-                spawn_enemy,
-                speed_limit,
-                debug_enemy_collision,
-                enemy_bounce_system,
-                rotate_enemy_sprite,
-            ));
+            .add_systems(
+                Update,
+                (
+                    spawn_enemy,
+                    speed_limit,
+                    enemy_bounce_system,
+                    rotate_enemy_sprite,
+                    keep_enemies_in_bound,
+                ),
+            );
     }
 }

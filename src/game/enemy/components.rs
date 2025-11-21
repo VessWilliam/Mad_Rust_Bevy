@@ -4,4 +4,13 @@ use bevy::prelude::*;
 pub struct Enemy;
 
 #[derive(Component)]
-pub struct EdgeEnemySpawner;
+pub struct EdgeEnemySpawner {
+    pub speed: f32,
+    pub safe_margin: f32,
+}
+
+impl EdgeEnemySpawner {
+    pub fn new(speed: f32, safe_margin: f32) -> Self {
+        Self { speed, safe_margin }
+    }
+}
