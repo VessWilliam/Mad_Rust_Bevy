@@ -1,18 +1,18 @@
 use bevy::prelude::*;
 use bevy_ecs_tilemap::TilemapPlugin;
-use tiled::TiledMapPlugin;
 use camera::CameraPlugin;
-use player::PlayerPlugin;
-use window_camera::CustomWindowPlugins;
+use core::CorePlugin;
 use enemy::EnemyPlugin;
+use player::PlayerPlugin;
+use tilemap::TiledMapPlugin;
+use window_camera::CustomWindowPlugins;
 
-pub mod tiled;
 pub mod camera;
-pub mod player;
+pub mod core;
 pub mod enemy;
+pub mod player;
+pub mod tilemap;
 pub mod window_camera;
-
-
 
 pub struct GamePlugin;
 
@@ -23,6 +23,7 @@ impl Plugin for GamePlugin {
             .add_plugins(CameraPlugin)
             .add_plugins(PlayerPlugin)
             .add_plugins(CustomWindowPlugins)
+            .add_plugins(CorePlugin)
             .add_plugins(EnemyPlugin);
     }
 }

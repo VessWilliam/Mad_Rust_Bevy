@@ -1,33 +1,33 @@
 use super::components::{EdgeEnemySpawner, Enemy};
 use super::constants::ENEMY_SIZE_SCALE;
 use super::traits::EnemySpawner;
+use crate::game::core::traits::SpawnBoundTrait;
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 use log::info;
 use rand::Rng;
 
-use crate::game::tiled::resources::SpawnBounds;
-
 impl EnemySpawner for EdgeEnemySpawner {
-    fn spawn_enemy(
+    fn spawn_enemy<B: SpawnBoundTrait>(
         &self,
         commands: &mut Commands,
         texture: Handle<bevy::image::Image>,
-        spawn_bounds: &SpawnBounds,
+        spawn_bounds: &B,
         enemy_id: i32,
     ) {
         let mut rng = rand::rng();
 
         let min_x = self.safe_margin;
         let min_y = self.safe_margin;
-        let max_x = spawn_bounds.width - self.safe_margin;
-        let max_y = spawn_bounds.height - self.safe_margin;
+        let max_x = spawn_bounds.width() - self.safe_margin;
+        let max_y = spawn_bounds.height() - self.safe_margin;
         let edge = rng.random_range(0..4);
 
         if max_x <= min_x || max_y <= min_y {
             warn!(
                 "invalid spawn bound ! width={}, height={}",
-                spawn_bounds.width, spawn_bounds.height
+                spawn_bounds.width(),
+                spawn_bounds.height()
             );
             return;
         }

@@ -7,7 +7,7 @@ mod resources;
 mod systems;
 mod traits;
 
-use crate::game::tiled::events::MapFullyLoaded;
+use crate::game::tilemap::events::MapFullyLoaded;
 
 use self::{
     resources::{GameTexture, MaxSpeed},

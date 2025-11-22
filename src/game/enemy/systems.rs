@@ -1,6 +1,6 @@
 use crate::game::enemy::traits::EnemySpawner;
-use crate::game::tiled::events::MapFullyLoaded;
-use crate::game::tiled::resources::SpawnBounds;
+use crate::game::tilemap::events::MapFullyLoaded;
+use crate::game::tilemap::resources::SpawnBounds;
 
 use bevy::prelude::*;
 
@@ -32,7 +32,7 @@ pub fn spawn_enemy(
 
         // Spawn 2 enemies directly
         for id in 0..2 {
-            spawner.spawn_enemy(&mut commands, gametexture.enemy.clone(), &spawn_bounds, id);
+            spawner.spawn_enemy(&mut commands, gametexture.enemy.clone(), &*spawn_bounds, id);
         }
     }
 }

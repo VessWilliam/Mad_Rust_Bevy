@@ -1,9 +1,12 @@
+use super::components::{MapCollisionState, MapMetadata};
+use super::traits::CollisionBuilderTrait;
 use bevy::prelude::*;
 use bevy_ecs_tiled::prelude::*;
-use bevy_rapier2d::{ dynamics::RigidBody, prelude::{ Collider, Friction } };
-use super::traits::CollisionBuilderTrait;
-use super::components::{ MapCollisionState, MapMetadata };
-use tiled::{ LayerType, TileLayer, FiniteTileLayer };
+use bevy_rapier2d::{
+    dynamics::RigidBody,
+    prelude::{Collider, Friction},
+};
+use tiled::{FiniteTileLayer, LayerType, TileLayer};
 
 impl CollisionBuilderTrait for MapCollisionState {
     fn build_collision(&mut self, map: &Map) {
@@ -18,15 +21,14 @@ impl CollisionBuilderTrait for MapCollisionState {
             info!("Found Collision layer!");
 
             match layer.layer_type() {
-                LayerType::Tiles(tile_layer) =>
-                    match tile_layer {
-                        TileLayer::Finite(finite_layer) => {
-                            self.process_collision_tiles(&finite_layer, map);
-                        }
-                        TileLayer::Infinite(_) => {
-                            warn!("Skipping infinite tile layer: {}", layer.name);
-                        }
+                LayerType::Tiles(tile_layer) => match tile_layer {
+                    TileLayer::Finite(finite_layer) => {
+                        self.process_collision_tiles(&finite_layer, map);
                     }
+                    TileLayer::Infinite(_) => {
+                        warn!("Skipping infinite tile layer: {}", layer.name);
+                    }
+                },
                 _ => {
                     warn!("Layer {} is not a tile layer", layer.name);
                 }
@@ -48,20 +50,16 @@ impl CollisionBuilderTrait for MapCollisionState {
                 }
 
                 let start_x = x;
-                while
-                    x < meta.map_width &&
-                    self.collision_map[(y * meta.map_width + x) as usize] == 1
+                while x < meta.map_width
+                    && self.collision_map[(y * meta.map_width + x) as usize] == 1
                 {
                     x += 1;
                 }
 
                 let width = (x - start_x) as f32;
 
-                let center = self.tile_to_world_center(
-                    (start_x as f32) + width / 2.0,
-                    y as f32,
-                    meta
-                );
+                let center =
+                    self.tile_to_world_center((start_x as f32) + width / 2.0, y as f32, meta);
 
                 commands.spawn((
                     Transform::from_translation(center),
@@ -81,7 +79,11 @@ impl MapCollisionState {
     fn tile_to_world_center(&self, x: f32, y: f32, meta: &MapMetadata) -> Vec3 {
         let flipped_y = meta.map_height as f32 - 1.0 - y;
 
-        Vec3::new(x * meta.tile_width, (flipped_y + 0.5) * meta.tile_height, 1.0)
+        Vec3::new(
+            x * meta.tile_width,
+            (flipped_y + 0.5) * meta.tile_height,
+            1.0,
+        )
     }
 
     fn process_collision_tiles(&mut self, finite_layer: &FiniteTileLayer, map: &Map) {
