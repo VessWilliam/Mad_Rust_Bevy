@@ -1,71 +1,72 @@
-use super::components::{EdgeEnemySpawner, Enemy};
+use super::components::{EdgeSpawner, Enemy};
 use super::constants::ENEMY_SIZE_SCALE;
 use super::traits::EnemySpawner;
+use crate::game::core::spawn::{SpawnArea, SpawnEdge};
 use crate::game::core::traits::SpawnBoundTrait;
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 use log::info;
-use rand::Rng;
 
-impl EnemySpawner for EdgeEnemySpawner {
-    fn spawn_enemy<B: SpawnBoundTrait>(
+impl EnemySpawner for EdgeSpawner {
+    fn spawn_enemy_default_config<B: SpawnBoundTrait>(
         &self,
         commands: &mut Commands,
-        texture: Handle<bevy::image::Image>,
+        texture: Handle<Image>,
         spawn_bounds: &B,
+        enemy_id: i32,
+    ) {
+        self.spawn_enemy_internal(
+            commands,
+            texture,
+            spawn_bounds,
+            self.speed,
+            self.safe_margin,
+            enemy_id,
+        );
+    }
+}
+
+impl EdgeSpawner {
+    fn spawn_enemy_internal<B: SpawnBoundTrait>(
+        &self,
+        commands: &mut Commands,
+        texture: Handle<Image>,
+        spawn_bounds: &B,
+        speed: f32,
+        margin: f32,
         enemy_id: i32,
     ) {
         let mut rng = rand::rng();
 
-        let min_x = self.safe_margin;
-        let min_y = self.safe_margin;
-        let max_x = spawn_bounds.width() - self.safe_margin;
-        let max_y = spawn_bounds.height() - self.safe_margin;
-        let edge = rng.random_range(0..4);
+        let area = SpawnArea::new(
+            margin,
+            margin,
+            spawn_bounds.width() - margin,
+            spawn_bounds.height() - margin,
+        );
 
-        if max_x <= min_x || max_y <= min_y {
+        if !area.is_valid() {
             warn!(
-                "invalid spawn bound ! width={}, height={}",
+                "Invalid spawn bounds! width={}, height={}",
                 spawn_bounds.width(),
                 spawn_bounds.height()
             );
             return;
         }
 
-        let (x, y, velocity, edge_name) = match edge {
-            0 => {
-                let x = rng.random_range(min_x..max_x);
-                let y = max_y - self.safe_margin;
-                let vel = Vec2::new(rng.random_range(-self.speed..self.speed), -self.speed);
-                (x, y, vel, "TOP")
-            }
-            1 => {
-                let x = rng.random_range(min_x..max_x);
-                let y = min_y + self.safe_margin;
-                let vel = Vec2::new(rng.random_range(-self.speed..self.speed), self.speed);
-                (x, y, vel, "BOTTOM")
-            }
-            2 => {
-                let x = min_x + self.safe_margin;
-                let y = rng.random_range(min_y..max_y);
-                let vel = Vec2::new(self.speed, rng.random_range(-self.speed..self.speed));
-                (x, y, vel, "LEFT")
-            }
-            _ => {
-                let x = max_x - self.safe_margin;
-                let y = rng.random_range(min_y..max_y);
-                let vel = Vec2::new(-self.speed, rng.random_range(-self.speed..self.speed));
-                (x, y, vel, "RIGHT")
-            }
-        };
+        let edge = SpawnEdge::random(&mut rng);
+        let (x, y, velocity) = edge.calculate_spawn(&mut rng, area, margin, speed);
 
         info!(
-            "Enemy {} spawning from {} at ({:.0}, {:.0})",
-            enemy_id, edge_name, x, y
+            "Enemy {} spawning at {}: ({:.0}, {:.0})",
+            enemy_id,
+            edge.as_string(),
+            x,
+            y
         );
 
-        let clamped_x = x.clamp(min_x, max_x);
-        let clamped_y = y.clamp(min_y, max_y);
+        let clamped_x = x.clamp(area.min_x, area.max_x);
+        let clamped_y = y.clamp(area.min_y, area.max_y);
 
         commands.spawn((
             Sprite::from_image(texture),
