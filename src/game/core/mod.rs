@@ -1,5 +1,7 @@
 use bevy::prelude::*;
 
+pub mod collision;
+pub mod spawn;
 pub mod traits;
 
 pub struct CorePlugin;
