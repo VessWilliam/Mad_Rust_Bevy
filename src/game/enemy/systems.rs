@@ -11,10 +11,10 @@ use bevy::prelude::*;
 use bevy_rapier2d::prelude::CollisionEvent;
 use bevy_rapier2d::prelude::Velocity;
 
+use super::constants::ENEMY_SPRITE;
 use super::constants::{
     COLLISION_ANGLE_VARIATION, COLLISION_BOUNCE, COLLISION_MIN_DISTANCE_SQ, COLLISION_MIN_SPEED,
 };
-use super::constants::{ENEMY_SAFE_MARGIN, ENEMY_SPEED, ENEMY_SPRITE};
 
 pub fn set_enemy_texture(asset_server: Res<AssetServer>, mut gametexture: ResMut<GameTexture>) {
     gametexture.enemy = asset_server.load(ENEMY_SPRITE);
@@ -32,11 +32,9 @@ pub fn spawn_enemy(
             map_event.map_entity
         );
 
-        let spawner = EdgeSpawner::new(ENEMY_SPEED, ENEMY_SAFE_MARGIN);
-
         // Spawn 2 enemies directly
         for id in 0..2 {
-            spawner.spawn_enemy_default_config(
+            EdgeSpawner::spawn_enemy_default_config(
                 &mut commands,
                 gametexture.enemy.clone(),
                 &*spawn_bounds,

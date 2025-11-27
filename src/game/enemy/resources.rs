@@ -1,3 +1,4 @@
+use super::constants::{MAX_SPEED_LIMIT, MIN_SPEED_LIMIT};
 use bevy::prelude::*;
 
 #[derive(Resource)]
@@ -14,8 +15,8 @@ pub struct MaxSpeed {
 impl Default for MaxSpeed {
     fn default() -> Self {
         Self {
-            max_speed: 250.0,
-            min_speed: 150.0,
+            max_speed: MAX_SPEED_LIMIT,
+            min_speed: MIN_SPEED_LIMIT,
         }
     }
 }

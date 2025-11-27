@@ -1,5 +1,5 @@
 use super::components::{EdgeSpawner, Enemy};
-use super::constants::ENEMY_SIZE_SCALE;
+use super::constants::{ENEMY_SAFE_MARGIN, ENEMY_SIZE_SCALE, ENEMY_SPEED};
 use super::traits::EnemySpawner;
 use crate::game::core::spawn::{SpawnArea, SpawnEdge};
 use crate::game::core::traits::SpawnBoundTrait;
@@ -9,18 +9,17 @@ use log::info;
 
 impl EnemySpawner for EdgeSpawner {
     fn spawn_enemy_default_config<B: SpawnBoundTrait>(
-        &self,
         commands: &mut Commands,
         texture: Handle<Image>,
         spawn_bounds: &B,
         enemy_id: i32,
     ) {
-        self.spawn_enemy_internal(
+        Self::spawn_enemy_internal(
             commands,
             texture,
             spawn_bounds,
-            self.speed,
-            self.safe_margin,
+            ENEMY_SPEED,
+            ENEMY_SAFE_MARGIN,
             enemy_id,
         );
     }
@@ -28,7 +27,6 @@ impl EnemySpawner for EdgeSpawner {
 
 impl EdgeSpawner {
     fn spawn_enemy_internal<B: SpawnBoundTrait>(
-        &self,
         commands: &mut Commands,
         texture: Handle<Image>,
         spawn_bounds: &B,
