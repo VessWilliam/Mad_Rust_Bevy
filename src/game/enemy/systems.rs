@@ -1,20 +1,16 @@
 use super::components::EdgeSpawner;
 use super::components::*;
+use super::constants::{
+    COLLISION_ANGLE_VARIATION, COLLISION_BOUNCE, COLLISION_MIN_DISTANCE_SQ, COLLISION_MIN_SPEED,
+    ENEMY_SPRITE,
+};
 use super::resources::*;
 use crate::game::core::collision::CollisionConfig;
-
 use crate::game::enemy::traits::EnemySpawner;
 use crate::game::tilemap::events::MapFullyLoaded;
 use crate::game::tilemap::resources::SpawnBounds;
-
 use bevy::prelude::*;
-use bevy_rapier2d::prelude::CollisionEvent;
-use bevy_rapier2d::prelude::Velocity;
-
-use super::constants::ENEMY_SPRITE;
-use super::constants::{
-    COLLISION_ANGLE_VARIATION, COLLISION_BOUNCE, COLLISION_MIN_DISTANCE_SQ, COLLISION_MIN_SPEED,
-};
+use bevy_rapier2d::prelude::{CollisionEvent, Velocity};
 
 pub fn set_enemy_texture(asset_server: Res<AssetServer>, mut gametexture: ResMut<GameTexture>) {
     gametexture.enemy = asset_server.load(ENEMY_SPRITE);

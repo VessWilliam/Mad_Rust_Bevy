@@ -15,3 +15,11 @@ pub const COLLISION_MIN_DISTANCE_SQ: f32 = 0.001;
 // Speed Limit
 pub const MAX_SPEED_LIMIT: f32 = 250.0;
 pub const MIN_SPEED_LIMIT: f32 = 150.0;
+
+//Physic Configuration
+pub const PHYSICS_COLLIDER_RADIUS: f32 = 16.0;
+pub const PHYSICS_RESTITUTION: f32 = 1.0;
+pub const PHYSICS_FRICTION: f32 = 0.0;
+pub const PHYSICS_GRAVITY: f32 = 0.0;
+pub const PHYSICS_LINEAR_DAMPING: f32 = 0.0;
+pub const PHYSICS_ANGULAR_DAMPING: f32 = 0.0;

@@ -1,11 +1,9 @@
-use super::components::{EdgeSpawner, Enemy};
+use super::components::{EdgeSpawner, Enemy, EnemyPhysicsBundle};
 use super::constants::{ENEMY_SAFE_MARGIN, ENEMY_SIZE_SCALE, ENEMY_SPEED};
 use super::traits::EnemySpawner;
 use crate::game::core::spawn::{SpawnArea, SpawnEdge};
 use crate::game::core::traits::SpawnBoundTrait;
 use bevy::prelude::*;
-use bevy_rapier2d::prelude::*;
-use log::info;
 
 impl EnemySpawner for EdgeSpawner {
     fn spawn_enemy_default_config<B: SpawnBoundTrait>(
@@ -73,23 +71,7 @@ impl EdgeSpawner {
                 scale: Vec3::splat(ENEMY_SIZE_SCALE),
                 ..Default::default()
             },
-            RigidBody::Dynamic,
-            Collider::ball(16.0),
-            Velocity::linear(velocity),
-            Restitution {
-                coefficient: 1.0,
-                combine_rule: CoefficientCombineRule::Max,
-            },
-            Friction {
-                coefficient: 0.0,
-                combine_rule: CoefficientCombineRule::Min,
-            },
-            GravityScale(0.0),
-            Damping {
-                linear_damping: 0.0,
-                angular_damping: 0.0,
-            },
-            Ccd::enabled(),
+            EnemyPhysicsBundle::new(velocity),
             Enemy,
         ));
     }
