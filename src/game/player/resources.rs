@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use super::const_string::{ PLAYER_SIZE, PLAYER_SIZE_SCALE };
+use super::constants::{PLAYER_SIZE, PLAYER_SIZE_SCALE};
 
 #[derive(Resource)]
 pub struct GameTexture {
@@ -28,7 +28,7 @@ pub struct PlayerConfig {
 impl Default for PlayerConfig {
     fn default() -> Self {
         Self {
-            spawn_x: 40.0, 
+            spawn_x: 40.0,
             spawn_y: 50.0,
             size: PLAYER_SIZE,
             scale: PLAYER_SIZE_SCALE,

@@ -13,12 +13,12 @@ pub struct EdgeSpawner;
 
 #[derive(Bundle)]
 pub struct EnemyPhysicsBundle {
-    pub rigidbody: RigidBody,
+    pub rigid_body: RigidBody,
     pub collider: Collider,
     pub velocity: Velocity,
     pub restitution: Restitution,
     pub friction: Friction,
-    pub gravity: GravityScale,
+    pub gravity_scale: GravityScale,
     pub damping: Damping,
     pub ccd: Ccd,
 }
@@ -26,7 +26,7 @@ pub struct EnemyPhysicsBundle {
 impl EnemyPhysicsBundle {
     pub fn new(velocity: Vec2) -> Self {
         Self {
-            rigidbody: RigidBody::Dynamic,
+            rigid_body: RigidBody::Dynamic,
             collider: Collider::ball(PHYSICS_COLLIDER_RADIUS),
             velocity: Velocity::linear(velocity),
             restitution: Restitution {
@@ -37,7 +37,7 @@ impl EnemyPhysicsBundle {
                 coefficient: PHYSICS_FRICTION,
                 combine_rule: CoefficientCombineRule::Min,
             },
-            gravity: GravityScale(PHYSICS_GRAVITY),
+            gravity_scale: GravityScale(PHYSICS_GRAVITY),
             damping: Damping {
                 linear_damping: PHYSICS_LINEAR_DAMPING,
                 angular_damping: PHYSICS_ANGULAR_DAMPING,
