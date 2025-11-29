@@ -13,5 +13,18 @@ pub const PHYSICS_LINEAR_DAMPING: f32 = 5.0;
 pub const COLLIDER_SCALE: f32 = 0.8;
 pub const COLLIDER_PADDING: f32 = 14.0;
 
-// Player Jump Configuration
+// Player Jump Mechanics
+pub const COYOTE_TIME_SEC: f32 = 0.10;
 pub const GROUNDED_THRESHOLD: f32 = 10.0;
+
+// Player Dynamic Damping For Better Air Control
+pub const AIR_DAMPING_FACTOR: f32 = 0.2;
+pub const GROUND_DAMPING_FACTOR: f32 = 5.0;
+
+// Player Default Spawn Position
+pub const DEFAULT_PLAYER_SPAWN_X: f32 = 40.0;
+pub const DEFAULT_PLAYER_SPAWN_Y: f32 = 50.0;
+
+// Player Default Speed & Jump
+pub const DEFAULT_PLAYER_SPEED: f32 = 150.0;
+pub const DEFAULT_PLAYER_JUMP: f32 = 500.0;

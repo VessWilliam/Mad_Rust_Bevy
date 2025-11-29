@@ -1,11 +1,35 @@
 use super::constants::{
-    PHYSICS_FRICTION, PHYSICS_GRAVITY_SCALE, PHYSICS_LINEAR_DAMPING, PHYSICS_RESTITUTION,
+    COYOTE_TIME_SEC, PHYSICS_FRICTION, PHYSICS_GRAVITY_SCALE, PHYSICS_LINEAR_DAMPING,
+    PHYSICS_RESTITUTION,
 };
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 
 #[derive(Component)]
 pub struct Player;
+
+#[derive(Component)]
+pub struct CoyoteTime {
+    pub timer: Timer,
+}
+
+impl Default for CoyoteTime {
+    fn default() -> Self {
+        Self {
+            timer: Timer::from_seconds(COYOTE_TIME_SEC, TimerMode::Once),
+        }
+    }
+}
+
+impl CoyoteTime {
+    pub fn is_active(&self) -> bool {
+        self.timer.finished()
+    }
+
+    pub fn reset(&mut self) {
+        self.timer.reset();
+    }
+}
 
 #[derive(Bundle)]
 pub struct PlayerPhysicsBundle {

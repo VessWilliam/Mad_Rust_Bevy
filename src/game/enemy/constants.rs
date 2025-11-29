@@ -13,7 +13,7 @@ pub const COLLISION_MIN_SPEED: f32 = 1.0;
 pub const COLLISION_MIN_DISTANCE_SQ: f32 = 0.001;
 
 //Enemy Speed Limit
-pub const MAX_SPEED_LIMIT: f32 = 250.0;
+pub const MAX_SPEED_LIMIT: f32 = 300.0;
 pub const MIN_SPEED_LIMIT: f32 = 150.0;
 
 //Enemy Physic Configuration
