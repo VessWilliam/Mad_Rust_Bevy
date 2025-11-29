@@ -1,19 +1,16 @@
-use bevy::prelude::*;
 use super::components::*;
-use bevy::render::camera::ScalingMode;
+use super::resources::CameraConfig;
+use bevy::prelude::*;
 
-pub fn setup_camera(mut commands: Commands) {
+pub fn setup_camera(mut commands: Commands, config: Res<CameraConfig>) {
     commands.spawn((
         Camera2d,
         Camera {
             hdr: false,
             ..Default::default()
         },
-        Transform::from_xyz(240.0, 160.0, 999.9),
-        Projection::from(OrthographicProjection {
-            scaling_mode: ScalingMode::FixedVertical { viewport_height: 280.0 },
-            ..OrthographicProjection::default_2d()
-        }),
+        Transform::from_xyz(config.start_x, config.start_y, config.order_z),
+        config.projection(),
         MainCamera,
     ));
 }
