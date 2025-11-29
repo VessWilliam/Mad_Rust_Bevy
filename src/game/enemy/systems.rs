@@ -1,7 +1,7 @@
 use super::components::*;
 use super::constants::{
     COLLISION_ANGLE_VARIATION, COLLISION_BOUNCE, COLLISION_MIN_DISTANCE_SQ, COLLISION_MIN_SPEED,
-    ENEMY_SPRITE,
+    ENEMY_SPRITE, SPRITE_ROTATION_MIN_VELOCITY,
 };
 use super::resources::*;
 use crate::game::core::collision::CollisionConfig;
@@ -62,7 +62,7 @@ pub fn speed_limit(max: ResMut<MaxSpeed>, mut query: Query<&mut Velocity, With<E
 
 pub fn rotate_enemy_sprite(mut query: Query<(&Velocity, &mut Transform), With<Enemy>>) {
     for (velocity, mut transform) in query.iter_mut() {
-        if velocity.linvel.length() < 0.1 {
+        if velocity.linvel.length() < SPRITE_ROTATION_MIN_VELOCITY {
             continue;
         }
         let angle = velocity.linvel.y.atan2(velocity.linvel.x);

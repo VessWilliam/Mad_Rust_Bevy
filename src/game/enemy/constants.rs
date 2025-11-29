@@ -23,3 +23,6 @@ pub const PHYSICS_FRICTION: f32 = 0.0;
 pub const PHYSICS_GRAVITY: f32 = 0.0;
 pub const PHYSICS_LINEAR_DAMPING: f32 = 0.0;
 pub const PHYSICS_ANGULAR_DAMPING: f32 = 0.0;
+
+//Enemy Sprite Rotation Updates
+pub const SPRITE_ROTATION_MIN_VELOCITY: f32 = 0.1;

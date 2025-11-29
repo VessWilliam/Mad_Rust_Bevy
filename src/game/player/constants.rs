@@ -8,6 +8,7 @@ pub const PHYSICS_GRAVITY_SCALE: f32 = 2.0;
 pub const PHYSICS_FRICTION: f32 = 0.1;
 pub const PHYSICS_RESTITUTION: f32 = 0.0;
 pub const PHYSICS_LINEAR_DAMPING: f32 = 5.0;
+pub const PHYSICS_ANGULAR_DAMPING: f32 = 0.0;
 
 //Player Collider Configuration
 pub const COLLIDER_SCALE: f32 = 0.8;

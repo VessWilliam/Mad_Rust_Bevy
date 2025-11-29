@@ -1,6 +1,6 @@
 use super::constants::{
-    COYOTE_TIME_SEC, PHYSICS_FRICTION, PHYSICS_GRAVITY_SCALE, PHYSICS_LINEAR_DAMPING,
-    PHYSICS_RESTITUTION,
+    COYOTE_TIME_SEC, PHYSICS_ANGULAR_DAMPING, PHYSICS_FRICTION, PHYSICS_GRAVITY_SCALE,
+    PHYSICS_LINEAR_DAMPING, PHYSICS_RESTITUTION,
 };
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
@@ -58,7 +58,7 @@ impl PlayerPhysicsBundle {
             restitution: Restitution::coefficient(PHYSICS_RESTITUTION),
             damping: Damping {
                 linear_damping: PHYSICS_LINEAR_DAMPING,
-                angular_damping: 0.0,
+                angular_damping: PHYSICS_ANGULAR_DAMPING,
             },
         }
     }
