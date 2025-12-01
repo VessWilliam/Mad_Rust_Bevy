@@ -1,7 +1,5 @@
-use super::constant::{DEFAULT_WINDOW_HEIGHT, DEFAULT_WINDOW_WIDTH, WINDOW_RESIZE_THRESHOLD};
-use crate::game::window_camera::resources::FullscreenState;
-
-use super::resources::WinSize;
+use super::constants::WINDOW_RESIZE_THRESHOLD;
+use super::resources::{FullscreenState, WinSize, WindowResolution};
 use bevy::prelude::*;
 use bevy::window::{PrimaryWindow, WindowMode, WindowResized};
 
@@ -10,8 +8,8 @@ pub fn set_window_init(
     mut window: Query<&Window, With<PrimaryWindow>>,
 ) {
     if let Ok(win) = window.single_mut() {
-        winsize.w = win.width();
-        winsize.h = win.height();
+        winsize.width = win.width();
+        winsize.height = win.height();
     }
 }
 
@@ -19,16 +17,14 @@ pub fn update_window_size(
     mut winsize: ResMut<WinSize>,
     mut resize_render: EventReader<WindowResized>,
 ) {
-    for event in resize_render.read() {
-        let width_change = (winsize.w - event.width).abs() > WINDOW_RESIZE_THRESHOLD;
-        let height_change = (winsize.h - event.height).abs() > WINDOW_RESIZE_THRESHOLD;
+    if let Some(event) = resize_render.read().last() {
+        let width_change = (winsize.width - event.width).abs() > WINDOW_RESIZE_THRESHOLD;
+        let height_change = (winsize.height - event.height).abs() > WINDOW_RESIZE_THRESHOLD;
 
         if width_change || height_change {
-            if width_change || height_change {
-                winsize.w = event.width;
-                winsize.h = event.height;
-                println!("Window resized to: {}x{}", winsize.w, winsize.h);
-            }
+            winsize.width = event.width;
+            winsize.height = event.height;
+            println!("Window resized to: {}x{}", winsize.width, winsize.height);
         }
     }
 }
@@ -54,8 +50,7 @@ pub fn toggle_fullscreen(
                 }
                 (true, false) => {
                     win.mode = WindowMode::Windowed;
-                    win.resolution
-                        .set(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
+                    WindowResolution::DEFAULT_WINDOWED.apply_to(&mut win);
                     fullscreen_state.is_fullscreen = false;
                     fullscreen_state.is_small = true;
                 }
