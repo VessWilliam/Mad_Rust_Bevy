@@ -4,6 +4,7 @@ use self::{
 };
 use bevy::prelude::*;
 
+pub mod constant;
 pub mod resources;
 pub mod systems;
 
@@ -14,7 +15,7 @@ impl Plugin for CustomWindowPlugins {
         app.insert_resource(WinSize { w: 0.0, h: 0.0 })
             .insert_resource(FullscreenState {
                 is_fullscreen: false,
-                is_small: false
+                is_small: false,
             })
             .add_systems(Startup, set_window_init)
             .add_systems(Update, update_window_size)

@@ -1,12 +1,13 @@
+use super::constant::{DEFAULT_WINDOW_HEIGHT, DEFAULT_WINDOW_WIDTH, WINDOW_RESIZE_THRESHOLD};
 use crate::game::window_camera::resources::FullscreenState;
 
 use super::resources::WinSize;
 use bevy::prelude::*;
-use bevy::window::{ PrimaryWindow, WindowMode, WindowResized };
+use bevy::window::{PrimaryWindow, WindowMode, WindowResized};
 
 pub fn set_window_init(
     mut winsize: ResMut<WinSize>,
-    mut window: Query<&Window, With<PrimaryWindow>>
+    mut window: Query<&Window, With<PrimaryWindow>>,
 ) {
     if let Ok(win) = window.single_mut() {
         winsize.w = win.width();
@@ -16,11 +17,11 @@ pub fn set_window_init(
 
 pub fn update_window_size(
     mut winsize: ResMut<WinSize>,
-    mut resize_render: EventReader<WindowResized>
+    mut resize_render: EventReader<WindowResized>,
 ) {
     for event in resize_render.read() {
-        let width_change = (winsize.w - event.width).abs() > 0.5;
-        let height_change = (winsize.h - event.height).abs() > 0.5;
+        let width_change = (winsize.w - event.width).abs() > WINDOW_RESIZE_THRESHOLD;
+        let height_change = (winsize.h - event.height).abs() > WINDOW_RESIZE_THRESHOLD;
 
         if width_change || height_change {
             if width_change || height_change {
@@ -42,7 +43,7 @@ pub fn exit_window(keyboard: Res<ButtonInput<KeyCode>>) {
 pub fn toggle_fullscreen(
     keyboard: Res<ButtonInput<KeyCode>>,
     mut fullscreen_state: ResMut<FullscreenState>,
-    mut windows: Query<&mut Window, With<PrimaryWindow>>
+    mut windows: Query<&mut Window, With<PrimaryWindow>>,
 ) {
     if let Ok(mut win) = windows.single_mut() {
         if keyboard.just_pressed(KeyCode::F11) {
@@ -53,7 +54,8 @@ pub fn toggle_fullscreen(
                 }
                 (true, false) => {
                     win.mode = WindowMode::Windowed;
-                    win.resolution.set(1300.0, 800.0);
+                    win.resolution
+                        .set(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
                     fullscreen_state.is_fullscreen = false;
                     fullscreen_state.is_small = true;
                 }
