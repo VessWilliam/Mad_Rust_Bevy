@@ -1,19 +1,19 @@
+use super::components::{MapCollisionState, MapMetadata};
+use super::events::MapFullyLoaded;
+use super::resources::SpawnBounds;
+use super::traits::CollisionBuilderTrait;
 use bevy::prelude::*;
 use bevy_ecs_tiled::prelude::*;
-use super::components::{ MapCollisionState, MapMetadata };
-use super::resources::SpawnBounds;
-use super::events::MapFullyLoaded;
-use super::traits::CollisionBuilderTrait;
 
 pub fn on_map_created(
     trigger: Trigger<TiledEvent<MapCreated>>,
     assets: Res<Assets<TiledMapAsset>>,
     mut commands: Commands,
-    mut map_loaded_event: EventWriter<MapFullyLoaded>
+    mut map_loaded_event: EventWriter<MapFullyLoaded>,
 ) {
     let map_entity = trigger.origin.entity();
 
-    // ✅ Get map directly from the event
+    // Get map directly from the event
     let Some(map_asset) = trigger.event().get_map(&assets) else {
         warn!("Map asset not found for entity {:?}", map_entity);
         return;
@@ -21,7 +21,12 @@ pub fn on_map_created(
 
     let map = map_asset;
 
-    info!("✅ Map loaded: {}x{} with {} layers", map.width, map.height, map.layers().len());
+    info!(
+        "Map loaded: {}x{} with {} layers",
+        map.width,
+        map.height,
+        map.layers().len()
+    );
 
     // Build collision data
     let mut collision_state = MapCollisionState::default();
@@ -39,13 +44,15 @@ pub fn on_map_created(
         height: world_height,
     });
 
-    info!("✅ Set spawn bounds: {}x{}", world_width, world_height);
+    info!("Set spawn bounds: {}x{}", world_width, world_height);
 
     // Spawn colliders
     collision_state.spawn_collider(&mut commands, &metadata);
 
     // Attach components to the map entity
-    commands.entity(map_entity).insert((collision_state, metadata));
+    commands
+        .entity(map_entity)
+        .insert((collision_state, metadata));
 
     map_loaded_event.write(MapFullyLoaded { map_entity });
 }

@@ -42,40 +42,54 @@ impl CollisionBuilderTrait for MapCollisionState {
         for y in 0..meta.map_height {
             let mut x = 0;
             while x < meta.map_width {
-                let idx = (y * meta.map_width + x) as usize;
-
-                if self.collision_map[idx] != 1 {
+                let start_x = x;
+                if !self.is_solid_tile(x, y, meta.map_width) {
                     x += 1;
                     continue;
                 }
 
-                let start_x = x;
-                while x < meta.map_width
-                    && self.collision_map[(y * meta.map_width + x) as usize] == 1
-                {
+                while x < meta.map_width && self.is_solid_tile(x, y, meta.map_width) {
                     x += 1;
                 }
 
-                let width = (x - start_x) as f32;
-
-                let center =
-                    self.tile_to_world_center((start_x as f32) + width / 2.0, y as f32, meta);
-
-                commands.spawn((
-                    Transform::from_translation(center),
-                    RigidBody::Fixed,
-                    Collider::cuboid((width * meta.tile_width) / 2.0, meta.tile_height / 2.0),
-                    Friction::coefficient(1.0),
-                ));
-
+                self.spawn_merge_collider(commands, start_x, x, y, meta);
                 collider_count += 1;
-                info!("Spawned {} merged tile colliders", collider_count);
             }
         }
+        info!("Spawned {} merged tile colliders", collider_count);
     }
 }
 
 impl MapCollisionState {
+    #[inline]
+    fn is_solid_tile(&self, x: u32, y: u32, map_width: u32) -> bool {
+        let idx = (y * map_width + x) as usize;
+        self.collision_map.get(idx) == Some(&1u8)
+    }
+
+    fn spawn_merge_collider(
+        &self,
+        commands: &mut Commands,
+        start_x: u32,
+        end_x: u32,
+        y: u32,
+        meta: &MapMetadata,
+    ) {
+        let width = (end_x - start_x) as f32;
+        let center_x = start_x as f32 + width / 2.0;
+        let center = self.tile_to_world_center(center_x, y as f32, meta);
+
+        let half_x = (width * meta.tile_width) / 2.0;
+        let half_y = meta.tile_height / 2.0;
+
+        commands.spawn((
+            Transform::from_translation(center),
+            RigidBody::Fixed,
+            Collider::cuboid(half_x, half_y),
+            Friction::coefficient(1.0),
+        ));
+    }
+
     fn tile_to_world_center(&self, x: f32, y: f32, meta: &MapMetadata) -> Vec3 {
         let flipped_y = meta.map_height as f32 - 1.0 - y;
 

@@ -3,6 +3,7 @@ use bevy_ecs_tiled::tiled::TiledPlugin;
 
 pub mod builder;
 pub mod components;
+pub mod constants;
 pub mod events;
 pub mod helper;
 pub mod resources;

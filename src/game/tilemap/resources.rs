@@ -1,3 +1,4 @@
+use super::constants::{DEFAULT_SPAWN_BOUND_HEIGHT, DEFAULT_SPAWN_BOUND_WIDTH};
 use crate::game::core::traits::SpawnBoundTrait;
 use bevy::prelude::*;
 
@@ -23,8 +24,8 @@ pub struct SpawnBounds {
 impl Default for SpawnBounds {
     fn default() -> Self {
         Self {
-            width: 800.0,
-            height: 600.0,
+            width: DEFAULT_SPAWN_BOUND_WIDTH,
+            height: DEFAULT_SPAWN_BOUND_HEIGHT,
         }
     }
 }
