@@ -21,7 +21,7 @@ pub struct EnemyPlugin;
 
 impl Plugin for EnemyPlugin {
     fn build(&self, app: &mut App) {
-        app.add_event::<MapFullyLoaded>()
+        app.add_message::<MapFullyLoaded>()
             .init_resource::<MaxSpeed>()
             .insert_resource(GameTexture { enemy: default() })
             .add_systems(Startup, set_enemy_texture)

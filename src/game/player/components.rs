@@ -23,7 +23,7 @@ impl Default for CoyoteTime {
 
 impl CoyoteTime {
     pub fn is_active(&self) -> bool {
-        self.timer.finished()
+        self.timer.is_finished()
     }
 
     pub fn reset(&mut self) {

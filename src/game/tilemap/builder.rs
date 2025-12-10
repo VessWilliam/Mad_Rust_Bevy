@@ -1,12 +1,12 @@
 use super::components::{MapCollisionState, MapMetadata};
 use super::traits::CollisionBuilderTrait;
+use ::tiled::{FiniteTileLayer, LayerType, TileLayer};
 use bevy::prelude::*;
-use bevy_ecs_tiled::prelude::*;
+use bevy_ecs_tiled::prelude::tiled::Map;
 use bevy_rapier2d::{
     dynamics::RigidBody,
     prelude::{Collider, Friction},
 };
-use tiled::{FiniteTileLayer, LayerType, TileLayer};
 
 impl CollisionBuilderTrait for MapCollisionState {
     fn build_collision(&mut self, map: &Map) {

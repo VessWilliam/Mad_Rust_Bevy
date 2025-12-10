@@ -17,7 +17,7 @@ pub fn set_enemy_texture(asset_server: Res<AssetServer>, mut gametexture: ResMut
 }
 
 pub fn spawn_enemy(
-    mut map_loaded_event: EventReader<MapFullyLoaded>,
+    mut map_loaded_event: MessageReader<MapFullyLoaded>,
     mut commands: Commands,
     gametexture: Res<GameTexture>,
     spawn_bounds: Res<SpawnBounds>,
@@ -71,7 +71,7 @@ pub fn rotate_enemy_sprite(mut query: Query<(&Velocity, &mut Transform), With<En
 }
 
 pub fn enemy_bounce_system(
-    mut collision_events: EventReader<CollisionEvent>,
+    mut collision_events: MessageReader<CollisionEvent>,
     mut enemies: Query<(&mut Velocity, &Transform), With<Enemy>>,
 ) {
     let collision_config = CollisionConfig::new(

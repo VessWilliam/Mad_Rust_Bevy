@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use bevy_ecs_tiled::prelude::*;
+use bevy_ecs_tiled::prelude::tiled::Map;
 
 use super::components::MapMetadata;
 

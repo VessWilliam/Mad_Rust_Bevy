@@ -6,7 +6,6 @@ pub fn setup_camera(mut commands: Commands, config: Res<CameraConfig>) {
     commands.spawn((
         Camera2d,
         Camera {
-            hdr: false,
             ..Default::default()
         },
         Transform::from_xyz(config.start_x, config.start_y, config.order_z),

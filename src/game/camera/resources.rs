@@ -1,6 +1,6 @@
 use super::constants::{CAMERA_ORDER_Z, CAMERA_START_X, CAMERA_START_Y, CAMERA_VIEWPORT_HEIGHT};
-use bevy::prelude::*;
-use bevy::render::camera::ScalingMode;
+use bevy::camera::*;
+use bevy::prelude::Resource;
 
 #[derive(Resource)]
 pub struct CameraConfig {

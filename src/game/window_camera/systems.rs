@@ -15,7 +15,7 @@ pub fn set_window_init(
 
 pub fn update_window_size(
     mut winsize: ResMut<WinSize>,
-    mut resize_render: EventReader<WindowResized>,
+    mut resize_render: MessageReader<WindowResized>,
 ) {
     if let Some(event) = resize_render.read().last() {
         let width_change = (winsize.width - event.width).abs() > WINDOW_RESIZE_THRESHOLD;

@@ -6,10 +6,10 @@ use bevy::prelude::*;
 use bevy_ecs_tiled::prelude::*;
 
 pub fn on_map_created(
-    trigger: Trigger<TiledEvent<MapCreated>>,
+    trigger: On<TiledEvent<MapCreated>>,
     assets: Res<Assets<TiledMapAsset>>,
     mut commands: Commands,
-    mut map_loaded_event: EventWriter<MapFullyLoaded>,
+    mut map_loaded_event: MessageWriter<MapFullyLoaded>,
 ) {
     let map_entity = trigger.origin.entity();
 

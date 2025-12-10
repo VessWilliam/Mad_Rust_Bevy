@@ -23,7 +23,7 @@ impl Plugin for TiledMapPlugin {
         app.add_plugins(TiledPlugin::default())
             .init_resource::<GameBackground>()
             .init_resource::<SpawnBounds>()
-            .add_event::<MapFullyLoaded>()
+            .add_message::<MapFullyLoaded>()
             .add_systems(Startup, (load_tile_map, setup_background_color));
     }
 }
