@@ -6,7 +6,7 @@ This project demonstrates how to build a 2D game from scratch using Bevy 0.16 an
 with a strong focus on ECS architecture, 
 physics, tilemaps, and a clean plugin-based structure.
 
-- 🌀 Bevy 0.16 - ECS Game Engine 
+- 🌀 Bevy 0.17 - ECS Game Engine 
 - ⚡ Rust — High Performance Rust Programming Language
 - 🧱 bevy_ecs_tiled -  Tiled (.tmx) map loader
 - 🪄 bevy_ecs_tilemap -  Tilemap rendering
