@@ -1,6 +1,6 @@
 # Mad Bevy & Rust 🧸
 
-Explore new game engine approach Bevy 0.16 & Rust.
+Explore new game engine approach Bevy 0.17 & Rust.
 
 This project demonstrates how to build a 2D game from scratch using Bevy 0.16 and Rust, 
 with a strong focus on ECS architecture, 
