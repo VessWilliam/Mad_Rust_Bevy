@@ -1,19 +1,26 @@
 [package]
-name = "crab_dungeon"
+name = "Rust"
 version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-bevy = "^0.17.3"
+#Bevy game engine
+bevy = "0.17.3"
+# Tiled
+tiled = "0.15.0"
 bevy_ecs_tiled = "0.10.0"
 bevy_ecs_tilemap = "0.17.0"
+# Physics
 bevy_rapier2d = "0.32.0"
+#Utilities & Helpers
 bytemuck = "1.24.0"
 crevice = "0.18.0"
-log = "0.4.28"
+# Logging & Error Handling
+log = "0.4.29"
+thiserror = "2.0.17"
+#Serialization / Deserialization
 serde = "1.0.228"
 serde_spanned = "1.0.3"
-thiserror = "2.0.17"
-tiled = "0.15.0"
-uuid = { version = "1.0", features = ["v4"] }
+#Misc / Game Utilities
+uuid = "1.19.0"
 rand = "0.9.2"
